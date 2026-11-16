@@ -1,0 +1,51 @@
+{
+  "name": "malino",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "packageManager": "pnpm@12.18.0",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "measure:bundle": "node scripts/measure-bundle.mjs",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
+    "worker:dev": "node scripts/wrangler.mjs dev",
+    "worker:check": "node scripts/wrangler.mjs deploy --dry-run --outdir artifacts/worker",
+    "db:migrate:local": "node scripts/wrangler.mjs d1 migrations apply DB --local"
+  },
+  "dependencies": {
+    "@tiptap/core": "3.34.0",
+    "@tiptap/extension-image": "3.34.0",
+    "@tiptap/extension-list": "3.34.0",
+    "@tiptap/extension-table": "3.34.0",
+    "@tiptap/markdown": "3.34.0",
+    "@tiptap/pm": "3.34.0",
+    "@tiptap/starter-kit": "3.34.0",
+    "better-auth": "1.7.25",
+    "drizzle-orm": "0.45.4",
+    "hono": "4.13.18",
+    "svelte": "5.57.3",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "5.20261114.1",
+    "@playwright/test": "1.65.1",
+    "@sveltejs/vite-plugin-svelte": "7.3.1",
+    "@types/node": "24.19.2",
+    "auth": "1.7.25",
+    "drizzle-kit": "0.31.11",
+    "jsdom": "31.0.1",
+    "svelte-check": "4.7.8",
+    "typescript": "6.0.3",
+    "vite": "8.3.8",
+    "vitest": "5.1.0",
+    "wrangler": "4.162.0"
+  }
+}

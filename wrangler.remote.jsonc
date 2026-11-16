@@ -1,0 +1,20 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "malino-feasibility",
+  "account_id": "371e8a81ee81e40182c405a122f410f2",
+  "main": "src/server/worker.ts",
+  "compatibility_date": "2026-11-16",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "preview_urls": false,
+  "send_metrics": false,
+  "minify": true,
+  "observability": { "enabled": false },
+  "vars": { "APP_ORIGIN": "https://malino-feasibility.yuwol036.workers.dev" },
+  "d1_databases": [{
+    "binding": "DB",
+    "database_name": "malino-feasibility",
+    "database_id": "88819ffd-7368-4b13-b25e-c5a5a2522a87",
+    "migrations_dir": "src/server/db/migrations"
+  }]
+}

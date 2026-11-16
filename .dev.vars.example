@@ -1,0 +1,5 @@
+# Local setup only. Copy to .dev.vars; never commit real values.
+BETTER_AUTH_SECRET=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+PILOT_EMAILS=
