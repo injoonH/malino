@@ -9,6 +9,7 @@ Updated 2026-11-16. Repository remote: `https://github.com/injoonH/malino.git`.
 - The user completed local credentials/account setup and confirmed the requested Workers Free check. The CLI can deploy, but its token cannot independently read billing subscriptions. No paid plan or add-on was enabled.
 - Google authorization reaches the phone-verification step. The user does not currently have their phone; real callback/exchange, authenticated remote measurements, and final hosting selection remain pending.
 - All nine GitHub issues are published. M01 is closed; M02–M09 remain open.
+- [Draft PR #10](https://github.com/injoonH/malino/pull/10) contains the planning documents and feasibility implementation on `feat/feasibility`. It is not merged.
 - Local Git metadata is read-only. After the user removed the remote signed-commit requirement, a minimal main branch was initialized through the GitHub API. Implementation publication uses a feature branch and PR; remaining branch protections are preserved.
 
 ## Published issues

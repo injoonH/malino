@@ -1,3 +1,5 @@
+Published as [draft PR #10](https://github.com/injoonH/malino/pull/10).
+
 # Proposed title
 
 Validate malino editor and hosted Cloudflare feasibility
