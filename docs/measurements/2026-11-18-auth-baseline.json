@@ -1,0 +1,429 @@
+{
+  "measuredAt": "2026-11-17T23:38:42.363Z",
+  "node": "v24.22.1",
+  "scope": "Node process CPU and disposable local D1; not deployed Worker CPU",
+  "warmup": 10,
+  "samples": 40,
+  "fresh": {
+    "wallP50Ms": 26.01447300000018,
+    "wallP95Ms": 38.68233099999998,
+    "nodeCpuP50Ms": 17.603,
+    "nodeCpuP95Ms": 35.898,
+    "queriesPerSession": [
+      2
+    ],
+    "samples": [
+      {
+        "wallMs": 27.36056099999996,
+        "nodeCpuMs": 23.393,
+        "queries": 2
+      },
+      {
+        "wallMs": 23.573235999999724,
+        "nodeCpuMs": 14.884,
+        "queries": 2
+      },
+      {
+        "wallMs": 26.315881999999874,
+        "nodeCpuMs": 22.517,
+        "queries": 2
+      },
+      {
+        "wallMs": 33.376696000000265,
+        "nodeCpuMs": 24.053,
+        "queries": 2
+      },
+      {
+        "wallMs": 34.54529300000013,
+        "nodeCpuMs": 26.047,
+        "queries": 2
+      },
+      {
+        "wallMs": 24.080887000000075,
+        "nodeCpuMs": 17.603,
+        "queries": 2
+      },
+      {
+        "wallMs": 27.361315000000104,
+        "nodeCpuMs": 19.149,
+        "queries": 2
+      },
+      {
+        "wallMs": 34.35621499999979,
+        "nodeCpuMs": 21.296,
+        "queries": 2
+      },
+      {
+        "wallMs": 34.175686999999925,
+        "nodeCpuMs": 26.273,
+        "queries": 2
+      },
+      {
+        "wallMs": 34.466593999999986,
+        "nodeCpuMs": 24.918,
+        "queries": 2
+      },
+      {
+        "wallMs": 25.239227000000028,
+        "nodeCpuMs": 21.135,
+        "queries": 2
+      },
+      {
+        "wallMs": 24.166521000000103,
+        "nodeCpuMs": 15.622,
+        "queries": 2
+      },
+      {
+        "wallMs": 26.01447300000018,
+        "nodeCpuMs": 17.371,
+        "queries": 2
+      },
+      {
+        "wallMs": 25.24489900000026,
+        "nodeCpuMs": 23.926,
+        "queries": 2
+      },
+      {
+        "wallMs": 22.481664000000364,
+        "nodeCpuMs": 14.842,
+        "queries": 2
+      },
+      {
+        "wallMs": 21.240972000000056,
+        "nodeCpuMs": 12.827,
+        "queries": 2
+      },
+      {
+        "wallMs": 23.345428000000084,
+        "nodeCpuMs": 13.91,
+        "queries": 2
+      },
+      {
+        "wallMs": 34.22296200000028,
+        "nodeCpuMs": 42.019,
+        "queries": 2
+      },
+      {
+        "wallMs": 38.68233099999998,
+        "nodeCpuMs": 52.84,
+        "queries": 2
+      },
+      {
+        "wallMs": 23.887351999999737,
+        "nodeCpuMs": 15.573,
+        "queries": 2
+      },
+      {
+        "wallMs": 25.2094689999999,
+        "nodeCpuMs": 16.272,
+        "queries": 2
+      },
+      {
+        "wallMs": 25.104635000000144,
+        "nodeCpuMs": 16.352,
+        "queries": 2
+      },
+      {
+        "wallMs": 28.113940000000184,
+        "nodeCpuMs": 17.788,
+        "queries": 2
+      },
+      {
+        "wallMs": 24.967376999999942,
+        "nodeCpuMs": 16.717,
+        "queries": 2
+      },
+      {
+        "wallMs": 26.166893000000073,
+        "nodeCpuMs": 15.885,
+        "queries": 2
+      },
+      {
+        "wallMs": 27.398401999999805,
+        "nodeCpuMs": 17.291,
+        "queries": 2
+      },
+      {
+        "wallMs": 23.54637099999991,
+        "nodeCpuMs": 13.991,
+        "queries": 2
+      },
+      {
+        "wallMs": 25.90293600000041,
+        "nodeCpuMs": 27.38,
+        "queries": 2
+      },
+      {
+        "wallMs": 22.976386999999704,
+        "nodeCpuMs": 12.539,
+        "queries": 2
+      },
+      {
+        "wallMs": 22.530844999999772,
+        "nodeCpuMs": 17.009,
+        "queries": 2
+      },
+      {
+        "wallMs": 23.386993000000075,
+        "nodeCpuMs": 12.156,
+        "queries": 2
+      },
+      {
+        "wallMs": 27.20988099999977,
+        "nodeCpuMs": 16.503,
+        "queries": 2
+      },
+      {
+        "wallMs": 24.521095999999943,
+        "nodeCpuMs": 15.805,
+        "queries": 2
+      },
+      {
+        "wallMs": 22.16191200000003,
+        "nodeCpuMs": 14.438,
+        "queries": 2
+      },
+      {
+        "wallMs": 36.05438099999992,
+        "nodeCpuMs": 19.979,
+        "queries": 2
+      },
+      {
+        "wallMs": 43.300080999999864,
+        "nodeCpuMs": 23.848,
+        "queries": 2
+      },
+      {
+        "wallMs": 44.355962999999974,
+        "nodeCpuMs": 22.414,
+        "queries": 2
+      },
+      {
+        "wallMs": 35.78197399999999,
+        "nodeCpuMs": 21.163,
+        "queries": 2
+      },
+      {
+        "wallMs": 34.58718499999986,
+        "nodeCpuMs": 19.219,
+        "queries": 2
+      },
+      {
+        "wallMs": 38.11091000000033,
+        "nodeCpuMs": 35.898,
+        "queries": 2
+      }
+    ]
+  },
+  "reused": {
+    "wallP50Ms": 19.821070999999392,
+    "wallP95Ms": 49.46577100000013,
+    "nodeCpuP50Ms": 10.313,
+    "nodeCpuP95Ms": 33.81,
+    "queriesPerSession": [
+      2
+    ],
+    "samples": [
+      {
+        "wallMs": 17.679005000000416,
+        "nodeCpuMs": 10.172,
+        "queries": 2
+      },
+      {
+        "wallMs": 18.612675999999738,
+        "nodeCpuMs": 9.787,
+        "queries": 2
+      },
+      {
+        "wallMs": 30.78726900000038,
+        "nodeCpuMs": 28.475,
+        "queries": 2
+      },
+      {
+        "wallMs": 23.244574000000284,
+        "nodeCpuMs": 15.177,
+        "queries": 2
+      },
+      {
+        "wallMs": 23.526590999999826,
+        "nodeCpuMs": 11.775,
+        "queries": 2
+      },
+      {
+        "wallMs": 20.179909999999836,
+        "nodeCpuMs": 9.101,
+        "queries": 2
+      },
+      {
+        "wallMs": 19.821070999999392,
+        "nodeCpuMs": 10.431,
+        "queries": 2
+      },
+      {
+        "wallMs": 19.05735300000015,
+        "nodeCpuMs": 11.956,
+        "queries": 2
+      },
+      {
+        "wallMs": 17.664841999999226,
+        "nodeCpuMs": 9.323,
+        "queries": 2
+      },
+      {
+        "wallMs": 19.142008000000715,
+        "nodeCpuMs": 8.779,
+        "queries": 2
+      },
+      {
+        "wallMs": 37.98180500000035,
+        "nodeCpuMs": 79.355,
+        "queries": 2
+      },
+      {
+        "wallMs": 25.884171000000606,
+        "nodeCpuMs": 12.284,
+        "queries": 2
+      },
+      {
+        "wallMs": 20.346545999999762,
+        "nodeCpuMs": 11.826,
+        "queries": 2
+      },
+      {
+        "wallMs": 49.46577100000013,
+        "nodeCpuMs": 27.28,
+        "queries": 2
+      },
+      {
+        "wallMs": 46.4464169999992,
+        "nodeCpuMs": 23.523,
+        "queries": 2
+      },
+      {
+        "wallMs": 69.4182380000002,
+        "nodeCpuMs": 33.81,
+        "queries": 2
+      },
+      {
+        "wallMs": 71.716136,
+        "nodeCpuMs": 94.503,
+        "queries": 2
+      },
+      {
+        "wallMs": 27.666924999999537,
+        "nodeCpuMs": 16.197,
+        "queries": 2
+      },
+      {
+        "wallMs": 24.105029999999715,
+        "nodeCpuMs": 12.426,
+        "queries": 2
+      },
+      {
+        "wallMs": 27.336427000000185,
+        "nodeCpuMs": 19.643,
+        "queries": 2
+      },
+      {
+        "wallMs": 22.32579100000021,
+        "nodeCpuMs": 13.583,
+        "queries": 2
+      },
+      {
+        "wallMs": 19.26950399999987,
+        "nodeCpuMs": 10.313,
+        "queries": 2
+      },
+      {
+        "wallMs": 18.552150000000438,
+        "nodeCpuMs": 9.372,
+        "queries": 2
+      },
+      {
+        "wallMs": 20.93022000000019,
+        "nodeCpuMs": 12.027,
+        "queries": 2
+      },
+      {
+        "wallMs": 24.93646699999954,
+        "nodeCpuMs": 13.867,
+        "queries": 2
+      },
+      {
+        "wallMs": 19.024734000000535,
+        "nodeCpuMs": 9.141,
+        "queries": 2
+      },
+      {
+        "wallMs": 17.851767999999538,
+        "nodeCpuMs": 9.069,
+        "queries": 2
+      },
+      {
+        "wallMs": 18.75489799999923,
+        "nodeCpuMs": 9.54,
+        "queries": 2
+      },
+      {
+        "wallMs": 18.224506999999903,
+        "nodeCpuMs": 8.706,
+        "queries": 2
+      },
+      {
+        "wallMs": 17.26201399999991,
+        "nodeCpuMs": 8.274,
+        "queries": 2
+      },
+      {
+        "wallMs": 20.668836999999257,
+        "nodeCpuMs": 13.326,
+        "queries": 2
+      },
+      {
+        "wallMs": 16.30602700000054,
+        "nodeCpuMs": 8.358,
+        "queries": 2
+      },
+      {
+        "wallMs": 17.993513999999777,
+        "nodeCpuMs": 8.875,
+        "queries": 2
+      },
+      {
+        "wallMs": 17.853713000000425,
+        "nodeCpuMs": 9.504,
+        "queries": 2
+      },
+      {
+        "wallMs": 18.757040999999845,
+        "nodeCpuMs": 9.686,
+        "queries": 2
+      },
+      {
+        "wallMs": 20.203104999999596,
+        "nodeCpuMs": 12.657,
+        "queries": 2
+      },
+      {
+        "wallMs": 22.827815999999984,
+        "nodeCpuMs": 9.499,
+        "queries": 2
+      },
+      {
+        "wallMs": 18.30318299999999,
+        "nodeCpuMs": 9.577,
+        "queries": 2
+      },
+      {
+        "wallMs": 18.04940499999975,
+        "nodeCpuMs": 10.104,
+        "queries": 2
+      },
+      {
+        "wallMs": 18.983322000000044,
+        "nodeCpuMs": 10.183,
+        "queries": 2
+      }
+    ]
+  }
+}

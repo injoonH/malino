@@ -17,6 +17,7 @@ Updated 2026-11-18. “Proposed” means no user approval or implementation is i
 | D11 | Deployed for feasibility; decision pending | Prefer Cloudflare Free after CPU, quota, and Korea latency tests. The 2026-11-18 live benchmark succeeded but CPU p95 was 11.294 ms, exceeding the 10 ms budget. Resolve CPU headroom and latency in issue #11 before final selection. Use the Raspberry Pi if free-tier compatibility fails; do not solve failure by purchasing a plan. |
 | D12 | Proposed | Implement one production target first. Keep schema and domain code portable without building or operating two deployments at launch. |
 | D13 | Confirmed | Invite-only pilot, then open registration. Public pages show the latest saved content with a clear editor sharing indicator. Support Korean and English. |
+| D15 | Locally validated; deployed rerun pending | Reuse auth configuration (never sessions), enable the supported joined lookup, and use Better Auth’s minimal entry point. Warm session queries drop from two to one; compressed Worker size drops to 266.72 KiB. Request-scoped profiling adds no identity/content logs. See docs/auth-performance.md; Free CPU suitability is still unresolved. |
 | D14 | Validated feasibility approach | A single recursive guarded UPDATE prevents hierarchy cycles under competing local D1 moves. This removes the need for a multi-request check-then-move sequence; full page-tree behavior remains M04. |
 
 For future changes, record the trigger, alternatives, consequence, evidence, and issue/PR link. Preserve prior rationale when replacing a decision.

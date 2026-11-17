@@ -39,6 +39,7 @@ Browser tests require Playwright Chromium and its OS libraries; see the [feasibi
 - [Decision log](docs/decisions.md): rationale and current decision status.
 - [Backlog](docs/backlog.md): resumable work items and GitHub publication status.
 - [Feasibility results](docs/feasibility.md): measurements, validation, and remaining release gates.
+- [Auth performance follow-up](docs/auth-performance.md): joined session lookups, local profiles, and pending deployed measurements.
 - [Cloudflare and Google setup](docs/feasibility-setup.md): secure configuration for the live tests.
 
 Research checked on 2026-11-16. Recheck dependency support and provider limits before implementation and deployment.

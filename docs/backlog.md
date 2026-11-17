@@ -8,7 +8,8 @@ Updated 2026-11-18. Repository remote: `https://github.com/injoonH/malino.git`.
 - M02 has a working local editor and a deployed, invite-restricted Worker test app at https://malino-feasibility.yuwol036.workers.dev. See [results](feasibility.md) and [live setup](feasibility-setup.md). The editor remains separate from the backend.
 - The user completed local credentials/account setup and confirmed the requested Workers Free check. The CLI can deploy, but its token cannot independently read billing subscriptions. No paid plan or add-on was enabled.
 - Real Google login and the 20-request authenticated benchmark passed on 2026-11-18. CPU p95 is 11.294 ms in that window, above the 10 ms Free budget; final hosting selection remains open. [Issue #11](https://github.com/injoonH/malino/issues/11) tracks CPU headroom, save latency, and unreconciled D1 metrics.
-- All nine GitHub issues are published. M01 is closed; M02–M09 remain open.
+- An auth performance follow-up is implemented and deployed for measurement: joined session queries, reused configuration, a smaller server import, and phase-separated diagnostics. See [the follow-up report](auth-performance.md). The authenticated rerun is pending; no deployed speedup is claimed.
+- All nine original GitHub issues are published. M01 is closed; M02–M09 remain open.
 - [Draft PR #10](https://github.com/injoonH/malino/pull/10) contains the planning documents and feasibility implementation on `feat/feasibility`. It is not merged.
 - Local Git metadata is read-only. After the user removed the remote signed-commit requirement, a minimal main branch was initialized through the GitHub API. Implementation publication uses a feature branch and PR; remaining branch protections are preserved.
 
@@ -35,7 +36,7 @@ Use one or more focused PRs per issue rather than accumulating the entire app in
 
 1. Read the specification, decision log, and [feasibility report](feasibility.md). Preserve the local prototype and existing dedicated remote resources.
 2. Inspect the remote branches and PRs before publishing changes. The workspace Git metadata may still lack the API-created main commit; do not overwrite local files or force-push.
-3. Preserve the first authenticated results in `docs/measurements/`. Resume [issue #11](https://github.com/injoonH/malino/issues/11): profile route CPU and database/network costs before optimizing or choosing hosting. No further phone-verification step is blocking the successful-login gate.
+3. Preserve the baseline and local profiles in `docs/measurements/`. Read [the auth performance follow-up](auth-performance.md); collect the pending `auth-joins-v2` browser report and correlate its phase windows with Cloudflare metrics before choosing hosting. Do not repeat the completed setup or remove auth protections.
 4. Measure deployed request CPU, total D1 row usage, and Korea latency; exercise bounded simulated quota failures and manual Korean IME/mobile checks. Keep M02 open until the hosting decision is supported by evidence.
 5. Continue M03 after the feasibility gates. Do not rebuild the editor prototype from scratch.
 

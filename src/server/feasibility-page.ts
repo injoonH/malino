@@ -13,7 +13,7 @@ body{font:16px/1.6 system-ui,sans-serif;background:#fdfcf9;color:#302e2b;max-wid
 <p id="status" role="status">Checking your session…</p>
 <div class="actions"><button id="signin" class="primary" hidden>Continue with Google</button><button id="run" hidden>Run a small performance check</button><button id="signout" hidden>Sign out</button><button id="download" hidden>Download results</button></div>
 <pre id="results" hidden></pre>
-<p><small>The check makes at most 25 application requests. Reported times are browser round trips, not Worker CPU measurements.</small></p>
+<p><small>The check makes 45 application requests. It includes a long Korean/English note and a 100-row table. Reported times are browser/server wall times, not Worker CPU measurements.</small></p>
 <script nonce="${nonce}">
 const el = id => document.getElementById(id);
 let report;
@@ -43,32 +43,59 @@ el('signout').onclick = async () => {
   try { await jsonPost('/api/auth/sign-out', {}); await session(); }
   catch(error) { el('status').textContent = error.message; }
 };
+function responseMetrics(response, startedAt, start) {
+  const serverTimingsMs = {};
+  for (const item of (response.headers.get('Server-Timing') || '').split(',')) {
+    const parts = item.trim().split(';dur=');
+    if (['auth','db','validate','save','render','total'].includes(parts[0]) && Number.isFinite(Number(parts[1]))) serverTimingsMs[parts[0]] = Number(parts[1]);
+  }
+  const dbCalls = response.headers.get('X-Malino-DB-Calls');
+  return {startedAt,endedAt:new Date().toISOString(),roundTripMs:performance.now()-start,serverTimingsMs,databaseCalls:dbCalls === null ? null : Number(dbCalls)};
+}
+const pauseBetweenPhases = () => new Promise(resolve => setTimeout(resolve, 1100));
 el('run').onclick = async () => {
-  el('run').disabled = true;
+  el('run').disabled = true; el('signout').disabled = true; el('download').hidden = true;
   el('status').textContent = 'Running the check…';
-  const doc = text => ({type:'doc',content:[{type:'paragraph',content:[{type:'text',text}]}]});
-  const cases = [ ['normal', doc('A little note. 오늘의 기록. '.repeat(100))], ['near-limit', doc('a'.repeat(255 * 1024))] ];
-  report = {testedAt:new Date().toISOString(),origin:location.origin,userAgent:navigator.userAgent,scope:'Synthetic authenticated browser round trips; not Worker CPU or a complete security audit',cases:[]};
+  const paragraph = text => ({type:'paragraph',content:[{type:'text',text}]});
+  const doc = text => ({type:'doc',content:[paragraph(text)]});
+  const longNote = {type:'doc',content:Array.from({length:100},()=>paragraph('A small thought 오늘의 기록 '.repeat(20).trim()))};
+  const table = {type:'doc',content:[{type:'table',content:Array.from({length:101},(_,row)=>({type:'tableRow',content:Array.from({length:4},(_,col)=>({type:row===0?'tableHeader':'tableCell',content:[paragraph(row===0?'Column '+(col+1):'기록 '+row+' · '+(col+1))]}))}))}]};
+  const cases = [ ['normal', doc('A little note. 오늘의 기록. '.repeat(100))], ['near-limit', doc('a'.repeat(255 * 1024))], ['long-note',longNote], ['table-100',table] ];
+  report = {version:'auth-joins-v2',testedAt:new Date().toISOString(),origin:location.origin,userAgent:navigator.userAgent,scope:'Synthetic authenticated browser/server wall times; not Worker CPU or a complete security audit. Phase windows support separate Cloudflare CPU queries; first and warm samples are retained.',sessionSamples:[],cases:[]};
   try {
+    await pauseBetweenPhases();
+    for(let i=0;i<5;i++) {
+      const startedAt=new Date().toISOString(); const start=performance.now();
+      const response=await fetch('/api/spike/session');
+      if(!response.ok) throw new Error('Session check failed ('+response.status+').');
+      await response.text();
+      report.sessionSamples.push(responseMetrics(response,startedAt,start));
+    }
     for (const [name, document] of cases) {
       const id = crypto.randomUUID(); let version = 0; const saves = []; const renders = []; const writes = [];
+      await pauseBetweenPhases();
       for (let i=0;i<5;i++) {
-        let start = performance.now();
+        const startedAt=new Date().toISOString(); const start=performance.now();
         const response = await jsonPost('/api/spike/save', {id,version,mutationId:crypto.randomUUID(),document});
         const result = await response.json();
-        saves.push(performance.now()-start); version=result.version;
+        saves.push(responseMetrics(response,startedAt,start)); version=result.version;
         writes.push({rowsRead:result.rowsRead,rowsWritten:result.rowsWritten});
-        start=performance.now();
-        await (await jsonPost('/api/spike/render',document)).text();
-        renders.push(performance.now()-start);
+      }
+      await pauseBetweenPhases();
+      for (let i=0;i<5;i++) {
+        const startedAt=new Date().toISOString(); const start=performance.now();
+        const response=await jsonPost('/api/spike/render',document);
+        await response.text();
+        renders.push(responseMetrics(response,startedAt,start));
       }
       const p95 = values => [...values].sort((a,b)=>a-b)[Math.ceil(values.length*.95)-1];
-      report.cases.push({name,documentBytes:new TextEncoder().encode(JSON.stringify(document)).length,saveP95Ms:p95(saves),renderP95Ms:p95(renders),saveSamplesMs:saves,renderSamplesMs:renders,noteSqlOnly:writes});
+      const saveSamplesMs=saves.map(sample=>sample.roundTripMs); const renderSamplesMs=renders.map(sample=>sample.roundTripMs);
+      report.cases.push({name,documentBytes:new TextEncoder().encode(JSON.stringify(document)).length,saveP95Ms:p95(saveSamplesMs),renderP95Ms:p95(renderSamplesMs),saveSamplesMs,renderSamplesMs,saveDetails:saves,renderDetails:renders,noteSqlOnly:writes});
     }
     el('status').textContent = 'Sign-in, saves, and rendering succeeded. Download the results and tell me this check passed.';
     el('download').hidden=false;
   } catch(error) { report.error=error.message; el('status').textContent=error.message; el('download').hidden=false; }
-  el('results').hidden=false; el('results').textContent=JSON.stringify(report,null,2); el('run').disabled=false;
+  el('results').hidden=false; el('results').textContent=JSON.stringify(report,null,2); el('run').disabled=false; el('signout').disabled=false;
 };
 el('download').onclick = () => {
   const url=URL.createObjectURL(new Blob([JSON.stringify(report,null,2)],{type:'application/json'}));
