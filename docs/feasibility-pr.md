@@ -12,6 +12,8 @@ A separate Hono Worker test app uses Better Auth, Drizzle, and D1 to exercise si
 
 Validation: type checking; 28 unit/SQLite tests; nine local D1/auth integration tests; seven Chromium browser checks; production bundle analysis; Worker dry-run build. Local editor-ready JavaScript is approximately 157 KiB gzip. Full timing methodology and caveats are in `docs/feasibility.md`.
 
-Remaining gates: real Google OAuth exchange, independent account quota verification, deployed CPU and quota measurements, Korea latency, and real Korean IME/mobile hardware testing. A dedicated invite-restricted test Worker is deployed; its health and Google authorization initiation pass. The real Google callback is pending phone verification. No final hosting decision is included. Keep the feasibility issue open until these pass.
+A dedicated invite-restricted test Worker is deployed. On 2026-11-18, real Google sign-in and 20 authenticated save/render requests succeeded. Normal save median/max was 707/748 ms, near-limit save median/max 1,096/1,712 ms (five samples each). Raw browser reports and Cloudflare aggregates are preserved in `docs/measurements/`.
+
+Hosting remains undecided: benchmark CPU p95 was 11.294 ms against the 10 ms Free budget, despite zero runtime errors. Issue #11 tracks CPU headroom, latency, and unreconciled D1 accounting. Negative live auth checks, bounded quota failures, and real Korean IME/mobile tests remain. Keep #2 open until the live gates pass.
 
 Related to #2; keep it open until the live acceptance criteria pass. Requirements, architecture alternatives, security considerations, and links to all nine work items are included for handoff.

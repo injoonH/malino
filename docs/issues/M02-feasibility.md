@@ -16,7 +16,7 @@ Create a minimal Svelte/Tiptap editor with required blocks, tables, URL images, 
 
 No real user notes or production credentials in fixtures or issues. A successful local emulator test alone does not satisfy this issue.
 
-## Progress: 2026-11-16
+## Progress: 2026-11-18
 
 Local implementation and measurements are complete; this issue remains open for the live gates. See `docs/feasibility.md` and `docs/feasibility-setup.md`.
 
@@ -26,7 +26,8 @@ Local implementation and measurements are complete; this issue remains open for 
 - [x] Korean/English labels, narrow viewport check, and screenshots. Real Korean IME and physical mobile testing remain manual gates.
 - [x] Worker dry run and dedicated remote Worker/D1 deployment; health and signed-out access checks pass.
 - [x] Cloudflare access and Google credentials configured securely; user completed the requested Free-plan check. API billing reads are unavailable to the CLI token.
-- [ ] Real Google callback/exchange, deployed CPU/row usage, bounded quota-failure behavior, and Korea latency.
+- [x] Real Google login and 20 authenticated save/render requests completed; user report preserved in `docs/measurements/2026-11-18-browser.json`.
+- [ ] Resolve CPU headroom (benchmark p95 11.294 ms versus 10 ms Free budget), total D1 row accounting, bounded quota-failure behavior, and latency attribution in [#11](https://github.com/injoonH/malino/issues/11).
 - [ ] Final hosting decision based on live evidence.
 
-Google login currently reaches phone verification; the user will finish when their phone is available. The test site is https://malino-feasibility.yuwol036.workers.dev. `docs/feasibility-pr.md` contains the PR description.
+Normal save median/max was 707/748 ms; near-limit save median/max was 1,096/1,712 ms. Five samples per case are insufficient to establish production p95. The successful login gate is complete; the overall feasibility gate remains open. The test site is https://malino-feasibility.yuwol036.workers.dev. `docs/feasibility-pr.md` contains the PR description.

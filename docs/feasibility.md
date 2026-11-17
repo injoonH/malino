@@ -1,6 +1,6 @@
 # M02 feasibility results
 
-Measured 2026-11-16. **Local editor and database feasibility passed; hosted feasibility is still open.** The isolated test Worker is deployed; these results do not yet establish that the complete service fits Cloudflare Free.
+Local baseline measured 2026-11-16; live results added 2026-11-18. **Local editor and database feasibility passed; hosted feasibility is still open.** The isolated test Worker is deployed; these results do not yet establish that the complete service fits Cloudflare Free.
 
 ## What is implemented
 
@@ -11,7 +11,7 @@ Measured 2026-11-16. **Local editor and database feasibility passed; hosted feas
 - An isolated Hono Worker with generated Better Auth/Drizzle schema, Google configuration, verified-email pilot enrollment restrictions, database sessions, atomic owner-scoped versioned saves, and a safe HTML rendering benchmark.
 - A recursive single-statement hierarchy move tested on disposable local D1, including opposing concurrent moves and 20 levels of nesting. This is a feasibility proof, not the full page-tree API.
 
-The editor preview and Worker are deliberately separate test surfaces. The hosted operator page starts Google login and offers bounded synthetic save/render measurements. A completed Google callback is still pending; public sharing and the synchronized note service are not implemented.
+The editor preview and Worker are deliberately separate test surfaces. The hosted operator page starts Google login and offers bounded synthetic save/render measurements. A real Google login and authenticated benchmark have succeeded; public sharing and the synchronized note service are not implemented.
 
 ## Measurements
 
@@ -47,7 +47,7 @@ Raw reports and screenshots are regenerated under ignored `artifacts/`: `bundle.
 | `pnpm worker:check` | Worker dry run and separate remote deployment succeed. |
 | `pnpm audit --prod` | Pass: zero reported production dependency vulnerabilities on 2026-11-16. This does not replace security review. |
 
-The D1 integration suite proves signed-cookie session verification, immediate revocation, allowlist hook rejection for uninvited/unverified users, Google authorization URL/state generation, rejection of forged callbacks, version conflicts, identical retries, cross-owner update rejection, body/origin checks, safe rendering headers, and atomic tree moves. Google itself is not contacted: the successful callback, token exchange, and identity verification still need a real end-to-end test.
+The D1 integration suite proves signed-cookie session verification, immediate revocation, allowlist hook rejection for uninvited/unverified users, Google authorization URL/state generation, rejection of forged callbacks, version conflicts, identical retries, cross-owner update rejection, body/origin checks, safe rendering headers, and atomic tree moves. Google itself is not contacted by the automated suite. The user completed a real Google login and authenticated benchmark on 2026-11-18; logout and uninvited-account live checks remain.
 
 ## Remote deployment and pending checks
 
@@ -55,11 +55,36 @@ The D1 integration suite proves signed-cookie session verification, immediate re
 - Dedicated D1 database: `malino-feasibility`, created with the APAC location hint; migration applied successfully. APAC is not a guarantee of placement in Korea.
 - Google credentials and pilot allowlist are configured as Worker secrets. The remote auth secret was generated independently of the local secret. Logs/observability storage and preview URLs are disabled.
 - Remote health returns 200, signed-out session access returns 401, and Google authorization initiation returns the expected provider and exact HTTPS callback. The operator page sends no-store and noindex headers.
-- The user reached Google's phone-verification prompt but cannot finish until their phone is available. This is not evidence of successful token exchange, account creation, or an authenticated save.
+- The user completed Google sign-in with an invited test account and supplied a successful authenticated benchmark on 2026-11-18; see the recorded results below.
 - The user's completed setup includes the requested Workers Free dashboard check. The CLI token's billing subscription read returns 403, so independent API billing verification is unavailable. No plan was changed.
 - The operator check creates two synthetic documents, makes 20 save/render requests, and reports browser round-trip samples and note-SQL row counts only. It excludes auth SQL and does not measure Worker CPU.
 
 Use [Cloudflare Worker metrics](https://developers.cloudflare.com/workers/observability/metrics-and-analytics/) for CPU evidence; startup duration and HTTP wall time are different measurements. Keep real note contents, callback query strings, and cookies out of diagnostics.
+
+## First authenticated remote test — 2026-11-18
+
+The user supplied a completed browser report at 08:29:31 KST (2026-11-17 23:29:31 UTC). Real Google login, the authenticated session, ten versioned saves, and ten render requests succeeded. This clears the successful-login gate, not the complete security or hosting gates. Raw measurements: [browser report](measurements/2026-11-18-browser.json), [Cloudflare aggregates](measurements/2026-11-18-cloudflare.json).
+
+| Operation | Payload | Median round trip | Reported p95 / maximum | Samples |
+| --- | --- | --- | --- | --- |
+| Normal save | 3,385 bytes | 707 ms | 748 ms | 5 |
+| Normal render | 3,385 bytes | 504 ms | 532 ms | 5 |
+| Near-limit save | 261,205 bytes | 1,096 ms | 1,712 ms | 5 |
+| Near-limit render | 261,205 bytes | 545 ms | 576 ms | 5 |
+
+The browser computes the nearest-rank p95; with five samples it equals the maximum. This is a small functional benchmark, not a reliable production tail-latency estimate. Rendering includes authentication and HTML download, but does not measure browser paint or a public sharing route. Typing responsiveness is not measured by these timings.
+
+Environment: the user confirmed this development PC; `/proc/cpuinfo` identifies an Intel Core i5-1334U. The report identifies Firefox 160 on Windows (the user agent does not establish the exact Windows edition). WSL2 exposes approximately 15.3 GiB RAM, which is not proof of total physical host memory. Agent egress reports country KR and Cloudflare edge LAX; the agent may use a different proxy/route from Windows Firefox. Windows adapter inspection failed through WSL interop. Physical connection type, browser VPN/proxy use, and browser route remain unverified. No IP address is retained.
+
+Cloudflare GraphQL for the matching 23:29:31–23:29:48 UTC window reports 20 requests, zero runtime errors, CPU p50 **7.103 ms**, p95 **11.294 ms**, and p99 **15.497 ms**. Worker wall-time p50/p95 are 358.642/944.192 ms. The API schema explicitly defines CPU and wall-time quantiles in microseconds; the figures here are converted to milliseconds. These are aggregate quantiles, not per-route measurements, and subtracting unrelated quantiles would not isolate network delay.
+
+The broader 23:25–23:30 UTC window reports 29 requests, zero runtime errors, and CPU p95/p99 25.115/40.615 ms. That window includes other requests around sign-in; there is no evidence assigning the peak to a particular auth endpoint. Runtime success is also distinct from an HTTP success status.
+
+Each five-save case reports 18 rows read and six written for note SQL: initial create 2/2, then four updates at 4/1. The combined note-only totals are 36 reads and 12 writes, excluding authentication. Preliminary D1 analytics report APAC, 45 reads and nine writes for the benchmark window, which does not reconcile with the note-only writes. Reporting delay, sampling, and window alignment need investigation before using these aggregates for quota projections.
+
+**Hosting decision remains open.** The measured CPU tail exceeds the published 10 ms Free budget, so adequate headroom has not been demonstrated. Cloudflare documents rollover CPU tolerance that can allow over-limit quantiles without errors; a successful short run does not prove sustainable compatibility. See [metrics behavior](https://developers.cloudflare.com/workers/observability/metrics-and-analytics/) and [runtime limits](https://developers.cloudflare.com/workers/platform/limits/). No paid resources or plan changes were introduced.
+
+Next: [issue #11](https://github.com/injoonH/malino/issues/11) covers route-specific CPU profiling, database round trips, realistic cold/warm fixtures, latency attribution, total D1 accounting, and controlled quota failures. Preserve all authorization and recovery protections during optimization. Evaluate the Pi if Free headroom cannot be established.
 
 ## Implementation decisions from the spike
 
@@ -68,12 +93,12 @@ Use [Cloudflare Worker metrics](https://developers.cloudflare.com/workers/observ
 3. Pin TypeScript 6.0.3. The installed Svelte checker requires an extra compatibility setup for TypeScript 7; using the supported version avoids that unnecessary complexity. The abandoned deprecated Better Auth CLI was removed; schema generation uses `auth` 1.7.25.
 4. Use atomic conditional SQL for saves. Identical retries return the existing revision without rewriting; changed retry payloads and stale writes fail. The owner/page composite key scopes every operation.
 5. A single recursive guarded UPDATE is a viable D1 move strategy. The production implementation still needs ordering, depth limits, trash/restore, and full authorization tests.
-6. Keep Cloudflare conditional. Successful local workerd/D1 tests and a small client bundle say nothing conclusive about the 10 ms deployed CPU budget, end-to-end latency, or account-wide quotas.
+6. Keep Cloudflare conditional. The first live run succeeds functionally but exceeds the 10 ms CPU budget in its tail; adequate headroom and account-wide quota usage remain unproven.
 
 ## Security and scope limitations
 
 - The public renderer is an authenticated benchmark endpoint. It is not the final unlisted-share feature; no public share grants or token lifecycle exist yet.
-- Google-only auth is configured with explicit origin/cookies, encrypted stored OAuth tokens, database rate limiting, and a closed enrollment allowlist. Real callback behavior and production proxy/origin settings remain release checks.
+- Google-only auth is configured with explicit origin/cookies, encrypted stored OAuth tokens, database rate limiting, and a closed enrollment allowlist. The successful live login is recorded below; negative auth checks, logout, and final production proxy/origin settings remain release checks.
 - Client image validation covers URL entry, imported content, and rendering. Images still contact third-party hosts; the full user preference for disabling external images is deferred to the product implementation.
 - The Worker validates document schema/structure and escapes rendered content. This does not constitute an independent security review. Keep dependency auditing in the release checks.
 - Browser drafts are only for this local preview. Account-scoped sync, durable multi-device conflict recovery, storage quotas, export recovery for every failure, and production data deletion remain later issues.
@@ -99,6 +124,6 @@ These temporary paths are machine-specific and are not required by the applicati
 
 ## Remaining gates
 
-Follow [secure setup](feasibility-setup.md), then measure real Google login, session checks, normal and maximum-size saves, public rendering, D1 read/write amplification including auth, and Korea latency on an actual Free account. Test graceful quota failures with a bounded simulation rather than exhausting shared account quotas.
+The successful login and synthetic save/render checks are recorded above. Follow [issue #11](https://github.com/injoonH/malino/issues/11) to resolve CPU headroom, full D1 accounting, and latency attribution. Complete live logout/uninvited-account checks, realistic maximum-size documents, and final public-render testing. Test graceful quota failures with a bounded simulation rather than exhausting shared account quotas.
 
 M02 remains open until those live checks and the manual IME/mobile checks pass. Track remaining work in [GitHub issue #2](https://github.com/injoonH/malino/issues/2).

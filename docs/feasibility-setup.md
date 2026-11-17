@@ -59,7 +59,7 @@ The Worker provides `/health`, Better Auth routes under `/api/auth`, and authent
 ## 4. Run the real auth and performance checks
 
 1. Open https://malino-feasibility.yuwol036.workers.dev in your browser.
-2. Select **Continue with Google** and complete Google's verification with the invited account. The user reached phone verification on 2026-11-16; this step is pending until the phone is available.
+2. Select **Continue with Google** and complete Google's verification with the invited account. A different invited account completed this step on 2026-11-18; successful login is no longer blocked on phone availability.
 3. After returning to malino, confirm that the page says sign-in succeeded.
 4. Select **Run a small performance check**. It saves two synthetic documents and performs a bounded set of requests; no real notes are used.
 5. Download the JSON results. These contain timing samples and SQL counts, not credentials or note contents. Record device/network context alongside the report.
