@@ -1,0 +1,67 @@
+{
+  "queriedAt": "2026-11-17T23:31:34.789Z",
+  "cpuUnit": "microseconds (confirmed by GraphQL schema)",
+  "benchmarkWindowUTC": [
+    "2026-11-17T23:29:31Z",
+    "2026-11-17T23:29:48Z"
+  ],
+  "data": {
+    "viewer": {
+      "accounts": [
+        {
+          "all": [
+            {
+              "dimensions": {
+                "status": "success"
+              },
+              "quantiles": {
+                "cpuTimeP50": 7172,
+                "cpuTimeP95": 25115,
+                "cpuTimeP99": 40615,
+                "wallTimeP50": 350824,
+                "wallTimeP95": 970771
+              },
+              "sum": {
+                "errors": 0,
+                "requests": 29,
+                "subrequests": 1
+              }
+            }
+          ],
+          "benchmark": [
+            {
+              "dimensions": {
+                "status": "success"
+              },
+              "quantiles": {
+                "cpuTimeP50": 7103,
+                "cpuTimeP95": 11294,
+                "cpuTimeP99": 15497,
+                "wallTimeP50": 358642,
+                "wallTimeP95": 944192
+              },
+              "sum": {
+                "errors": 0,
+                "requests": 20
+              }
+            }
+          ],
+          "database": [
+            {
+              "dimensions": {
+                "servedByRegion": "APAC"
+              },
+              "sum": {
+                "readQueries": 21,
+                "rowsRead": 45,
+                "rowsWritten": 9,
+                "writeQueries": 7
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "interpretation": "Time-window aggregates, not route attribution. Preliminary D1 totals are unreconciled with note-only counts; do not use to project quotas."
+}

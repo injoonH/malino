@@ -1,0 +1,92 @@
+{
+  "testedAt": "2026-11-17T23:29:31.826Z",
+  "origin": "https://malino-feasibility.yuwol036.workers.dev",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:160.0) Gecko/20100101 Firefox/160.0",
+  "scope": "Synthetic authenticated browser round trips; not Worker CPU or a complete security audit",
+  "cases": [
+    {
+      "name": "normal",
+      "documentBytes": 3385,
+      "saveP95Ms": 748,
+      "renderP95Ms": 532,
+      "saveSamplesMs": [
+        748,
+        734,
+        706,
+        707,
+        705
+      ],
+      "renderSamplesMs": [
+        532,
+        504,
+        520,
+        498,
+        494
+      ],
+      "noteSqlOnly": [
+        {
+          "rowsRead": 2,
+          "rowsWritten": 2
+        },
+        {
+          "rowsRead": 4,
+          "rowsWritten": 1
+        },
+        {
+          "rowsRead": 4,
+          "rowsWritten": 1
+        },
+        {
+          "rowsRead": 4,
+          "rowsWritten": 1
+        },
+        {
+          "rowsRead": 4,
+          "rowsWritten": 1
+        }
+      ]
+    },
+    {
+      "name": "near-limit",
+      "documentBytes": 261205,
+      "saveP95Ms": 1712,
+      "renderP95Ms": 576,
+      "saveSamplesMs": [
+        1712,
+        1131,
+        1096,
+        911,
+        1089
+      ],
+      "renderSamplesMs": [
+        576,
+        550,
+        533,
+        545,
+        545
+      ],
+      "noteSqlOnly": [
+        {
+          "rowsRead": 2,
+          "rowsWritten": 2
+        },
+        {
+          "rowsRead": 4,
+          "rowsWritten": 1
+        },
+        {
+          "rowsRead": 4,
+          "rowsWritten": 1
+        },
+        {
+          "rowsRead": 4,
+          "rowsWritten": 1
+        },
+        {
+          "rowsRead": 4,
+          "rowsWritten": 1
+        }
+      ]
+    }
+  ]
+}
