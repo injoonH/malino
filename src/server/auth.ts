@@ -1,4 +1,4 @@
-import { betterAuth } from 'better-auth';
+import { betterAuth } from 'better-auth/minimal';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { drizzle } from 'drizzle-orm/d1';
 import type { D1Database } from '@cloudflare/workers-types';
@@ -23,7 +23,7 @@ export function createAuth(env: AuthEnvironment) {
   }
   const invited = new Set((env.PILOT_EMAILS ?? '').split(',').map((email) => email.trim().toLowerCase()).filter(Boolean));
   return betterAuth({
-    database: drizzleAdapter(drizzle(env.DB), { provider: 'sqlite', schema }),
+    database: drizzleAdapter(drizzle(env.DB, { schema }), { provider: 'sqlite', schema }),
     baseURL: env.APP_ORIGIN,
     secret: env.BETTER_AUTH_SECRET,
     trustedOrigins: [env.APP_ORIGIN],
@@ -33,6 +33,7 @@ export function createAuth(env: AuthEnvironment) {
     session: { expiresIn: 60 * 60 * 24 * 7, updateAge: 60 * 60 * 24, cookieCache: { enabled: false } },
     rateLimit: { enabled: true, storage: 'database', window: 60, max: 30 },
     advanced: {
+      database: { joins: true },
       useSecureCookies: origin.protocol === 'https:',
       ipAddress: { ipAddressHeaders: ['cf-connecting-ip'] },
       defaultCookieAttributes: { httpOnly: true, sameSite: 'lax' },
@@ -43,4 +44,16 @@ export function createAuth(env: AuthEnvironment) {
     logger: { disabled: true },
     telemetry: { enabled: false },
   });
+}
+
+// Reuse immutable auth configuration, never session results. Bindings/configuration
+// changes replace the instance so secret rotation and invite changes take effect.
+const instances = new WeakMap<D1Database, { config: string[]; auth: ReturnType<typeof createAuth> }>();
+export function getAuth(env: AuthEnvironment) {
+  const config = [env.APP_ORIGIN, env.BETTER_AUTH_SECRET, env.GOOGLE_CLIENT_ID, env.GOOGLE_CLIENT_SECRET, env.PILOT_EMAILS];
+  const previous = instances.get(env.DB);
+  if (previous && previous.config.every((value, index) => value === config[index])) return previous.auth;
+  const auth = createAuth(env);
+  instances.set(env.DB, { config, auth });
+  return auth;
 }

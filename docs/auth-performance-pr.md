@@ -1,0 +1,7 @@
+Authenticated requests rebuilt Better Auth and used two sequential database queries to load the session and user. This change reuses configuration per binding (invalidated by credential/origin/invite changes), enables the supported joined lookup, and uses the adapter-only Better Auth import. Sessions remain database-verified on every request, preserving immediate revocation.
+
+The feasibility API now reports request-scoped wall timings and query counts without logging identity, content, SQL, or credentials. The operator check separates session/save/render phases and adds long-note/table fixtures so the next browser report can be correlated with deployed CPU.
+
+Validation: zero type-check errors/warnings; 28 unit tests, 12 local D1/auth integration tests, and both updated operator browser checks pass. Tests cover changed auth configuration, concurrent metric isolation, database failures, revocation, authorization, retries, and tree cycles. Local profiling shows one warm session query instead of two; the compressed Worker shrank from 321.03 to 266.72 KiB. Detailed measurements and limitations are in `docs/auth-performance.md`.
+
+Deployed to the existing feasibility Worker; health and signed-out checks pass. The same-browser authenticated rerun is pending, so no deployed CPU improvement or final Free-tier decision is claimed. Related to #11 and #2; neither is closed. This PR is stacked on #10 to keep the performance follow-up reviewable separately.

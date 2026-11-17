@@ -35,7 +35,12 @@ it('authenticates signed sessions using Better Auth and local D1', async () => {
   expect((await app.request('/api/spike/session', {}, env)).status).toBe(401);
   const signed = await app.request('/api/spike/session', { headers: { Cookie: cookie() } }, env);
   expect(signed.status).toBe(200);
+  // This fixture expires in one hour, so the first lookup also refreshes it.
+  expect(signed.headers.get('X-Malino-DB-Calls')).toBe('2');
+  expect(signed.headers.get('Server-Timing')).toContain('auth;dur=');
   expect(await signed.json()).toEqual({ userId: 'alice' });
+  const warm = await app.request('/api/spike/session', { headers: { Cookie: cookie() } }, env);
+  expect(warm.headers.get('X-Malino-DB-Calls')).toBe('1');
   expect((await app.request('/api/spike/session', { headers: { Cookie: cookie() + 'bad' } }, env)).status).toBe(401);
 });
 
@@ -57,6 +62,7 @@ it('saves atomically on D1, retries safely, and rejects stale/cross-owner update
   const first = { id, version: 0, mutationId: randomUUID(), document: largeTable };
   const saved = await post('/api/spike/save', first);
   expect(saved.status).toBe(200);
+  expect(saved.headers.get('X-Malino-DB-Calls')).toBe('2');
   expect(await saved.json()).toMatchObject({ version: 1 });
   expect(await (await post('/api/spike/save', first)).json()).toMatchObject({ version: 1 });
   const next = { ...first, version: 1, mutationId: randomUUID() };
@@ -69,6 +75,44 @@ it('saves atomically on D1, retries safely, and rejects stale/cross-owner update
   expect((await post('/api/spike/save', first)).status).toBe(409);
   const stored = await env.DB.prepare('SELECT owner_id,version FROM spike_documents WHERE id=?').bind(id).first();
   expect(stored).toMatchObject({ owner_id: 'alice', version: 2 });
+});
+
+it('keeps request metrics isolated across overlapping authenticated requests', async () => {
+  const [session, save] = await Promise.all([
+    app.request('/api/spike/session', { headers: { Cookie: cookie() } }, env),
+    post('/api/spike/save', { id: randomUUID(), version: 0, mutationId: randomUUID(), document: largeTable }),
+  ]);
+  expect(session.status).toBe(200);
+  expect(save.status).toBe(200);
+  expect(session.headers.get('X-Malino-DB-Calls')).toBe('1');
+  expect(save.headers.get('X-Malino-DB-Calls')).toBe('2');
+  expect(session.headers.get('Server-Timing')).not.toContain('save;');
+  expect(save.headers.get('Server-Timing')).toContain('save;');
+});
+
+it('honors changed auth secrets and origins without reusing stale configuration', async () => {
+  const request = { headers: { Cookie: cookie() } };
+  expect((await app.request('/api/spike/session', request, env)).status).toBe(200);
+  expect((await app.request('/api/spike/session', request, { ...env, BETTER_AUTH_SECRET: 'rotated-synthetic-test-only-0123456789abcdef' })).status).toBe(401);
+  expect((await app.request('/api/spike/session', request, { ...env, APP_ORIGIN: 'http://untrusted.example' })).status).toBe(503);
+  expect((await app.request('/api/spike/session', request, env)).status).toBe(200);
+});
+
+it('fails safely on database unavailability without acknowledging a save', async () => {
+  const unavailable = new Proxy(env.DB, { get(target, key) {
+    if (key === 'prepare') return () => { throw new Error('synthetic database quota failure'); };
+    const value = Reflect.get(target, key, target);
+    return typeof value === 'function' ? value.bind(target) : value;
+  } });
+  const response = await app.request('/api/spike/save', {
+    method: 'POST', headers: { Origin: origin, 'Content-Type': 'application/json', Cookie: cookie() },
+    body: JSON.stringify({ id: randomUUID(), version: 0, mutationId: randomUUID(), document: largeTable }),
+  }, { ...env, DB: unavailable });
+  expect(response.status).toBe(503);
+  const result = await response.text();
+  expect(result).not.toContain('version');
+  expect(result).not.toContain('synthetic database quota failure');
+  expect(result).not.toContain(secret);
 });
 
 it('rejects cross-site mutations, missing sessions, invalid documents, and oversized bodies', async () => {

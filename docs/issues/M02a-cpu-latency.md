@@ -19,3 +19,9 @@ Parent: #2. Related implementation: #10. Preserve the successful baseline in `do
 - [ ] Update D11 and #2 with the hosting recommendation; evaluate the Pi if Free compatibility cannot be demonstrated. No paid plan, add-on, or reduced authorization checks.
 
 Cloudflare documents that CPU quantiles can exceed limits without errors because of rollover CPU time: https://developers.cloudflare.com/workers/observability/metrics-and-analytics/ . A successful short run alone does not establish sustainable Free-tier compatibility.
+
+## Implementation progress — 2026-11-18
+
+Joined lookup, auth configuration reuse, and the minimal server import are deployed for measurement. Warm session queries dropped from two to one in local D1, and compressed Worker size dropped from 321.03 to 266.72 KiB. Request-scoped diagnostics and phase-separated long-note/table benchmarks are ready. All 28 unit tests, 12 integration tests, and two updated operator browser checks pass. See `docs/auth-performance.md` for evidence and limitations.
+
+The same-browser authenticated rerun is pending. No improvement in deployed CPU or final Free-tier compatibility is claimed; keep this issue open.
